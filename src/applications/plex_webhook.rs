@@ -1,17 +1,16 @@
+use crate::{
+    models::plex_webhook_event::PlexWebhookEvent, services::telegram_bot::TelegramBotService,
+};
 use axum::{
     extract::{Multipart, State},
     http::StatusCode,
     response::IntoResponse,
-};
-use crate::{
-    models::plex_webhook_event::PlexWebhookEvent, services::telegram_bot::TelegramBotService,
 };
 
 pub async fn plex_webhook(
     State(telegram_svc): State<TelegramBotService>,
     mut multipart: Multipart,
 ) -> Result<impl IntoResponse, StatusCode> {
-
     let mut payload: Option<PlexWebhookEvent> = None;
 
     while let Some(field) = multipart.next_field().await.unwrap() {
