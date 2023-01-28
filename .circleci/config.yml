@@ -1,0 +1,24 @@
+version: 2.1
+
+workflows:
+  build-and-deploy:
+    jobs:
+      - run-me:
+          filters:
+            branches:
+              only: /release\/.*/
+
+jobs:
+  run-me:
+    machine: true
+    resource_class: trchopan/rpi-2
+    steps:
+      - run:
+          name: Clone the git repository
+          command: git clone $CIRCLE_REPOSITORY_URL -b $CIRCLE_BRANCH .
+      - run:
+          name: Build
+          command: cargo build --release
+      - run:
+          name: Stop and install new binary
+          command: sudo systemctl stop mini-hooks.service
